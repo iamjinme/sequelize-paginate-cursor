@@ -96,6 +96,10 @@ const connect = checkConnection();
 connect.then(() => {
   // Create a user model
   const model = createModel();
+  // Recreate model
+  model.sequelize.sync({
+    force: true,
+  });
   // Save a random record each 10 seconds
   setInterval(async () => {
     debug('will create new user');
@@ -110,8 +114,22 @@ connect.then(() => {
       error(err);
     }
   }, 10000);
-
+  let sinceId = null;
   // Execute a paginate with push key
+  process.stdin.on('data', async(text) => {
+    debug('input', text);
+    try {
+      const { objects, nextCursor } = await model.paginate({
+        limit: 3,
+        sinceId,
+        reverse: false,
+      });
+      sinceId = nextCursor;
+      debug('paged', { objects, nextCursor });
+    } catch (err) {
+      error(err);
+    }
+  });
 }).catch((err) => {
   error(err);
 });

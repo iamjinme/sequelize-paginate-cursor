@@ -1,7 +1,6 @@
 /**
  * Created by mirabalj on 10/12/16.
  */
-import _ from 'lodash';
 
 export default (Model, { name } = {}) => {
   // Pagination using cursor is here!
@@ -27,12 +26,11 @@ export default (Model, { name } = {}) => {
         findObject[keyPaginated] = findCursor;
       }
 
+      // Assign order of search
+      const order = keyPaginated + (reverse ? '' : ' DESC');
+
       // Execute query with limit
-      const objects = await this.findAll({ where, limit, attributes: select });
-      // Is reverse?
-      if (reverse) {
-        _.reverse(objects);
-      }
+      const objects = await this.findAll({ where, limit, attributes: select, order });
 
       let nextCursor = undefined;
       const len = objects.length;
@@ -44,9 +42,9 @@ export default (Model, { name } = {}) => {
         const findNextCursor = {};
         findNextCursor[lsThan] = lastCursor;
         findNextCursorWhere[keyPaginated] = findNextCursor;
-
-        const nextObject = await this.findOne(findNextCursorWhere);
-
+        // Find next cursor
+        const nextObject = await this.findOne({ where: findNextCursorWhere, order });
+        // Exist next cursor?
         if (nextObject) {
           nextCursor = nextObject[keyPaginated];
         }
