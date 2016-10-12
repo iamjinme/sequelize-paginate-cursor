@@ -1,4 +1,4 @@
-import { checkConnection, createModel, createUser, searchUsers } from './example';
+import { checkConnection, createModel, createRecord, searchUsers } from './example';
 
 const varFake = 0;
-export { varFake, checkConnection, createModel, createUser, searchUsers };
+export { varFake, checkConnection, createModel, createRecord, searchUsers };

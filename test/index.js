@@ -25,12 +25,13 @@ describe('Paginate plugin', () => {
     const model = Paginate.createModel();
     expect(model).to.be.an('object').with.property('paginate');
   });
-  it.skip('should create a user', async () => {
+  it('should create a user', async () => {
+    const model = Paginate.createModel();
     const userToCreate = {
       firstName: 'John',
       lastName: 'Doe',
     };
-    const user = await Paginate.createUser(userToCreate);
+    const user = await Paginate.createRecord(model, userToCreate);
     expect(user).to.be.an('object').with.property('id');
   });
   it('should paginate a search', async () => {

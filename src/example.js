@@ -4,9 +4,9 @@
 import dotenv from 'dotenv';
 import Sequelize from 'sequelize';
 import _ from 'lodash';
-// import _debug from 'debug';
-// const debug = _debug('sequelizeCursor:connection');
-// const error = _debug('sequelizeCursor:error');
+import _debug from 'debug';
+const debug = _debug('sequelizeCursor:connection');
+const error = _debug('sequelizeCursor:error');
 
 dotenv.config();
 
@@ -136,17 +136,16 @@ export const createModel = () => {
 };
 
 /**
- * Create a user
- * @param {User}
+ * Create a record in a table
+ * @param Model, Data
  * @returns Promise
  */
-export const createUser = async (data) => {
-  let userCreated;
-  const User = createModel();
-  if (User) {
-    userCreated = await User.create(data);
+export const createRecord = async (model, data) => {
+  let recordCreated;
+  if (model) {
+    recordCreated = await model.create(data);
   }
-  return userCreated;
+  return recordCreated;
 };
 
 /**
@@ -165,13 +164,31 @@ export const searchUsers = async (parameters) => {
  * @returns {string}
  */
 export const randomString = (len) => {
-  const string = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, len);
-  return string;
+  const string = Math.random().toString(36).replace(/[^a-z]+/g, '');
+  return string.substr(0, len);
 };
 
+// Validate the connection
 const connect = checkConnection();
 connect.then(() => {
-  console.log(randomString(6));
+  // Create a user model
+  const model = createModel();
+  // Save a random record each 10 seconds
+  setInterval(async () => {
+    debug('will create new user');
+    try {
+      // Data with random string
+      const user = await createRecord(model, {
+        firstName: randomString(24),
+        lastName: randomString(24),
+      });
+      debug('created', user);
+    } catch (err) {
+      error(err);
+    }
+  }, 10000);
+
+  // Execute a paginate with push key
 }).catch((err) => {
   console.log(err);
 });
