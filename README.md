@@ -1,6 +1,6 @@
 # sequelize-paginate-cursor 
-[![npm](https://img.shields.io/npm/dm/mongoose-paginate-cursor.svg?maxAge=2592000)](https://www.npmjs.com/package/sequelize-paginate-cursor)
-[![License](https://img.shields.io/npm/l/mongoose-paginate-cursor.svg?maxAge=2592000?style=plastic)](https://github.com/mirabalj/sequelize-paginate-cursor/blob/master/license)
+[![npm](https://img.shields.io/npm/dm/sequelize-paginate-cursor.svg?maxAge=2592000)](https://www.npmjs.com/package/sequelize-paginate-cursor)
+[![License](https://img.shields.io/npm/l/sequelize-paginate-cursor.svg?maxAge=2592000?style=plastic)](https://github.com/mirabalj/sequelize-paginate-cursor/blob/master/license)
 
 ## Installation
 
