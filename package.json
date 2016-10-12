@@ -17,7 +17,8 @@
     "build:module": "babel -d ./lib ./src -s",
     "postinstall": "npm run build",
     "watch:babel": "babel ./src --watch --out-dir ./lib",
-    "commit": "git add . && git-cz"
+    "commit": "git add . && git-cz",
+    "flow": "flow"
   },
   "author": "Jinme Mirabal",
   "license": "MIT",
@@ -26,7 +27,11 @@
     "babel-core": "6.8.0",
     "babel-preset-es2015-node5": "1.2.0",
     "babel-preset-stage-3": "6.5.0",
-    "rimraf": "2.5.4"
+    "dotenv": "2.0.0",
+    "lodash": "4.16.4",
+    "mysql": "2.11.1",
+    "rimraf": "2.5.4",
+    "sequelize": "3.24.3"
   },
   "devDependencies": {
     "arrow-mocha": "^1.0.1",
