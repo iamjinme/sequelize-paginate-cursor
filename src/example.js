@@ -4,7 +4,7 @@
 import dotenv from 'dotenv';
 import Sequelize from 'sequelize';
 import _debug from 'debug';
-import pagination from './pagination';
+import pagination from '../lib/pagination';
 
 const debug = _debug('sequelizeCursor:connection');
 const error = _debug('sequelizeCursor:error');
