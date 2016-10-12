@@ -18,10 +18,10 @@ describe('Paginate plugin', () => {
       expect(response).to.be.an('undefined');
     } catch (err) {
       expect(err).to.be.an('Error');
-      expect(err).to.have.property('message').equal('SEQUALIZE ERROR CONNECTION');
+      expect(err).to.have.property('message').equal('SEQUELIZE ERROR CONNECTION');
     }
   });
-  it.skip('should create a model', async () => {
+  it('should create a model', async () => {
     const model = Paginate.createModel();
     expect(model).to.be.an('object').with.property('paginate');
   });
@@ -39,6 +39,6 @@ describe('Paginate plugin', () => {
       where: { firstName: 'John' },
       limit: 3,
     });
-    console.log('nextCursor', results.nextCursor);
+    expect(results).to.be.an('object').with.property('nextCursor');
   });
 });

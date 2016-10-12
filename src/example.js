@@ -3,8 +3,9 @@
  */
 import dotenv from 'dotenv';
 import Sequelize from 'sequelize';
-import _ from 'lodash';
 import _debug from 'debug';
+import pagination from './pagination';
+
 const debug = _debug('sequelizeCursor:connection');
 const error = _debug('sequelizeCursor:error');
 
@@ -21,84 +22,6 @@ const sequelize = new Sequelize(database, username, password, {
   port,
 });
 
-export const paginate = (Model, { name } = {}) => {
-  // Pagination using cursor is here!
-  const results = async function ({
-    sinceId, maxId, limit = 1,
-    select, where = {},
-    keyPaginated = 'id', reverse = false,
-  } = {}, callback) {
-    try {
-      const lsThanE = reverse ? '$gte' : '$lte';
-      const lsThan = reverse ? '$gt' : '$lt';
-      const gsThan = reverse ? '$lt' : '$gt';
-      const findObject = where;
-      const findCursor = {};
-
-      if (sinceId) {
-        findCursor[lsThanE] = sinceId;
-        findObject[keyPaginated] = findCursor;
-      }
-
-      if (maxId) {
-        findCursor[gsThan] = maxId;
-        findObject[keyPaginated] = findCursor;
-      }
-
-      // Execute query with limit
-      const objects = await this.findAll({ where, limit });
-      // Is reverse?
-      if (reverse) {
-        _.reverse(objects);
-      }
-
-      let nextCursor = undefined;
-      const len = objects.length;
-
-      // TODO: Create nextCursor object
-
-      // Search fine? create a cursor!
-      if (len) {
-        const lastCursor = objects[len - 1][keyPaginated];
-        const findNextCursorWhere = where;
-        const findNextCursor = {};
-        findNextCursor[lsThan] = lastCursor;
-        findNextCursorWhere[keyPaginated] = findNextCursor;
-
-        const nextObject = await this.findOne(findNextCursorWhere);
-
-        if (nextObject) {
-          nextCursor = nextObject[keyPaginated];
-        }
-      }
-
-      // Create paginate object
-      const objectReturn = {
-        objects,
-        nextCursor,
-      };
-
-      // Call back, ¿exist?
-      if (callback) {
-        callback(null, objectReturn);
-      }
-
-      // Return paginate
-      return objectReturn;
-    } catch (err) {
-      // Catch error and send to callback
-      if (callback) callback(err);
-      throw err;
-    }
-  };
-  // Assign the function as the name identifier
-  if (name) {
-    Model[name] = results;
-  } else {
-    Model.paginate = results;
-  }
-};
-
 /**
  * Check the connection to database
  * @returns Promise
@@ -108,7 +31,7 @@ export const checkConnection = async () => {
   try {
     connect = await sequelize.authenticate();
   } catch (err) {
-    throw Error('SEQUALIZE ERROR CONNECTION');
+    throw Error('SEQUELIZE ERROR CONNECTION');
   }
   return connect;
 };
@@ -131,7 +54,7 @@ export const createModel = () => {
     timestamps: false, // Not timestamps
     freezeTableName: true, // Model tableName will be the same as the model name
   });
-  paginate(User);
+  pagination(User);
   return User;
 };
 
@@ -190,5 +113,5 @@ connect.then(() => {
 
   // Execute a paginate with push key
 }).catch((err) => {
-  console.log(err);
+  error(err);
 });
