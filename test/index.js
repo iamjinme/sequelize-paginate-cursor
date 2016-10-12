@@ -18,7 +18,7 @@ describe('Paginate plugin', () => {
       expect(response).to.be.an('undefined');
     } catch (err) {
       expect(err).to.be.an('Error');
-      expect(err).to.have.property('message').equal('SEQUALIZE ERROR');
+      expect(err).to.have.property('message').equal('SEQUALIZE ERROR CONNECTION');
     }
   });
   it.skip('should create a model', async () => {

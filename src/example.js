@@ -4,6 +4,9 @@
 import dotenv from 'dotenv';
 import Sequelize from 'sequelize';
 import _ from 'lodash';
+// import _debug from 'debug';
+// const debug = _debug('sequelizeCursor:connection');
+// const error = _debug('sequelizeCursor:error');
 
 dotenv.config();
 
@@ -84,7 +87,7 @@ export const paginate = (Model, { name } = {}) => {
       return objectReturn;
     } catch (err) {
       // Catch error and send to callback
-      callback(err);
+      if (callback) callback(err);
       throw err;
     }
   };
@@ -96,16 +99,24 @@ export const paginate = (Model, { name } = {}) => {
   }
 };
 
+/**
+ * Check the connection to database
+ * @returns Promise
+ */
 export const checkConnection = async () => {
   let connect;
   try {
-    connect = sequelize.authenticate();
+    connect = await sequelize.authenticate();
   } catch (err) {
-    throw Error('SEQUALIZE ERROR');
+    throw Error('SEQUALIZE ERROR CONNECTION');
   }
-  return await connect;
+  return connect;
 };
 
+/**
+ * Create User model
+ * @returns {Model}
+ */
 export const createModel = () => {
   const User = sequelize.define('user', {
     firstName: {
@@ -124,6 +135,11 @@ export const createModel = () => {
   return User;
 };
 
+/**
+ * Create a user
+ * @param {User}
+ * @returns Promise
+ */
 export const createUser = async (data) => {
   let userCreated;
   const User = createModel();
@@ -133,7 +149,29 @@ export const createUser = async (data) => {
   return userCreated;
 };
 
+/**
+ * Search users with paginate parameters
+ * @param {parameters}
+ * @returns Promise
+ */
 export const searchUsers = async (parameters) => {
   const User = createModel();
   return await User.paginate(parameters);
 };
+
+/**
+ * Generate a random string
+ * @param len
+ * @returns {string}
+ */
+export const randomString = (len) => {
+  const string = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, len);
+  return string;
+};
+
+const connect = checkConnection();
+connect.then(() => {
+  console.log(randomString(6));
+}).catch((err) => {
+  console.log(err);
+});
