@@ -28,6 +28,7 @@ var paged = await Model.paginate({
   limit, //amount of documents to get on search (default: 1)
   select, //what values get on request
   where, // query to match the search
+  include, // property to establish relationships
   keyPaginated, //key to paginate on document (ejm: 'count' ) (default: 'id')
   reverse, //tell the pagination to reverse the search
 });
