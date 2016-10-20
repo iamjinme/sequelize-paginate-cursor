@@ -8,7 +8,7 @@ export default (Model, { name } = {}) => {
     sinceId, maxId, limit = 1,
     select, where = {},
     keyPaginated = 'id', reverse = false,
-    include = [],
+    include = [], subQuery = true,
   } = {}, callback) {
     try {
       const lsThanE = reverse ? '$gte' : '$lte';
@@ -31,7 +31,14 @@ export default (Model, { name } = {}) => {
       const order = keyPaginated + (reverse ? '' : ' DESC');
 
       // Execute query with limit
-      const objects = await this.findAll({ where, include, limit, attributes: select, order });
+      const objects = await this.findAll({
+        where,
+        subQuery,
+        include,
+        limit,
+        attributes: select,
+        order,
+      });
 
       let nextCursor = undefined;
       const len = objects.length;
@@ -44,7 +51,12 @@ export default (Model, { name } = {}) => {
         findNextCursor[lsThan] = lastCursor;
         findNextCursorWhere[keyPaginated] = findNextCursor;
         // Find next cursor
-        const nextObject = await this.findOne({ where: findNextCursorWhere, include, order });
+        const nextObject = await this.findOne({
+          where: findNextCursorWhere,
+          subQuery,
+          include,
+          order,
+        });
         // Exist next cursor?
         if (nextObject) {
           nextCursor = nextObject[keyPaginated];

@@ -40,6 +40,7 @@ describe('Paginate plugin', () => {
   it('should paginate a search example', async () => {
     const results = await Example.searchUsers({
       where: { firstName: 'John' },
+      subQuery: false,
       limit: 3,
     });
     expect(results).to.be.an('object').with.property('nextCursor');
